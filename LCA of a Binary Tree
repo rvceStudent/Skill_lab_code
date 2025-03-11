@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for the tree node
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Function to create a new node
+struct Node* newNode(int data) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+// Function to find the LCA of two nodes n1 and n2
+struct Node* findLCA(struct Node* root, int n1, int n2) {
+    // Base case: if the root is NULL or matches one of the nodes
+    if (root == NULL || root->data == n1 || root->data == n2)
+        return root;
+
+    // Recurse for the left and right subtrees
+    struct Node* leftLCA = findLCA(root->left, n1, n2);
+    struct Node* rightLCA = findLCA(root->right, n1, n2);
+
+    // If both left and right LCA are not NULL, the current node is the LCA
+    if (leftLCA && rightLCA)
+        return root;
+
+    // Otherwise, return the non-null child
+    return (leftLCA != NULL) ? leftLCA : rightLCA;
+}
+
+// Main function to test the findLCA function
+int main() {
+    // Construct a simple binary tree
+    struct Node* root = newNode(3);
+    root->left = newNode(5);
+    root->right = newNode(1);
+    root->left->left = newNode(6);
+    root->left->right = newNode(2);
+    root->left->right->left = newNode(7);
+    root->left->right->right = newNode(4);
+    root->right->left = newNode(0);
+    root->right->right = newNode(8);
+
+    int n1 = 5, n2 = 1;
+    struct Node* lca = findLCA(root, n1, n2);
+    if (lca != NULL) {
+        printf("LCA of %d and %d is %d\n", n1, n2, lca->data);
+    } else {
+        printf("LCA not found.\n");
+    }
+
+    return 0;
+}
